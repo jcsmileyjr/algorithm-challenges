@@ -1,55 +1,46 @@
-
-
-export const translate = (RNA = 0) => {
-    let protein = [];//empty array to be sent if no array is passed as a parameter
-    return RNA === 0? protein: sequences(RNA);
-}
-
-//assigns groups of 3 chars to names of protiens
-const sequences = (RNA) => {
-    const oldSequence = RNA.match(/.{1,3}/g); //split string into substrings of 3
-
-    let newSequence =[];//arrray to hold sequence of names
-
-    for(var i=0;i<oldSequence.length;i++){
-        if(oldSequence[i] === "AUG"){
-            newSequence.push('Methionine');
-        }else if(oldSequence[i] ==="UUU"){
-            newSequence.push('Phenylalanine');
-        }else if(oldSequence[i] ==="UUC"){
-            newSequence.push('Phenylalanine');
-        }else if(oldSequence[i] ==="UUA"){
-            newSequence.push('Leucine');
-        }else if(oldSequence[i] ==="UUG"){
-            newSequence.push('Leucine');
-        }else if(oldSequence[i] ==="UCU"){
-            newSequence.push('Serine');
-        }else if(oldSequence[i] ==="UCC"){
-            newSequence.push('Serine');
-        }else if(oldSequence[i] ==="UCA"){
-            newSequence.push('Serine');
-        }else if(oldSequence[i] ==="UCG"){
-            newSequence.push('Serine');
-        }else if(oldSequence[i] ==="UAU"){
-            newSequence.push('Tyrosine');
-        }else if(oldSequence[i] ==="UAC"){
-            newSequence.push('Tyrosine');
-        }else if(oldSequence[i] ==="UGU"){
-            newSequence.push('Cysteine');
-        }else if(oldSequence[i] ==="UGC"){
-            newSequence.push('Cysteine');
-        }else if(oldSequence[i] ==="UGG"){
-            newSequence.push('Tryptophan');
-        }else if(oldSequence[i] ==="UAA"){
-            return newSequence;
-        }else if(oldSequence[i] ==="UAG"){
-            return newSequence;
-        }else if(oldSequence[i] ==="UGA"){
-            return newSequence;
-        }else{
-            throw "Invalid codon";
-        }
+const rnaToCondons = RNA => {
+    return RNA.match(/.{1,3}/g); //split string into substrings of 3
+  };
+  
+  const condonToProteins = condon => {
+    if (condon === "AUG") return "Methionine";
+    //return protein Methionine
+    else if (condon === "UUU" || condon === "UUC") return "Phenylalanine";
+    //return protein phenylalanine
+    else if (condon === "UUA" || condon === "UUG") return "Leucine";
+    //return protien Leucine
+    else if (
+      condon === "UCU" ||
+      condon === "UCC" ||
+      condon === "UCA" ||
+      condon === "UCG"
+    )
+      return "Serine";
+    //return protien Serine
+    else if (condon === "UAU" || condon === "UAC") return "Tyrosine";
+    else if (condon === "UGU" || condon === "UGC") return "Cysteine";
+    else if (condon === "UGG") return "Tryptophan";
+    else if (condon === "UAA" || condon === "UAG" || condon === "UGA")
+      return "STOP";
+    //Stopping condon for DNA.
+    else throw "Invalid codon";
+  };
+  
+  export const translate = RNA => {
+    //let protein = []; //empty array to be sent if no array is passed as a parameter
+    if (RNA === undefined) {
+      return new Array(0);
     }
-
-    return newSequence;
-}
+  
+    let condons = rnaToCondons(RNA);
+    let aminnoAcids = []; //arrray to hold sequence of names
+  
+    for (const condon of condons) {
+      if (condonToProteins(condon) === "STOP") {
+        break;
+      }
+      aminnoAcids.push(condonToProteins(condon));
+    }
+    return aminnoAcids;
+  };
+  
