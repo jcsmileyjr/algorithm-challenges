@@ -1,3 +1,24 @@
+//List of protiens by their codon names
+const proteins = {
+  AUG: "Methionine",
+  UUU: "Phenylalanine",
+  UUC: "Phenylalanine",
+  UUA: "Leucine",
+  UUG: "Leucine",
+  UCU: "Serine",
+  UCC: "Serine",
+  UCA: "Serine",
+  UCG: "Serine",
+  UAU: "Tyrosine",
+  UAC: "Tyrosine",
+  UGU: "Cysteine",
+  UGC: "Cysteine",
+  UGG: "Tryptophan"
+};
+
+//List of STOP sequence use to end a series of proteins creatign a unquie animo acid
+const stopSequence = ["UAA", "UAG", "UGA"];
+
 const rnaToCondons = RNA => {
   return RNA.match(/.{1,3}/g); //split string into substrings of 3
 };
@@ -5,8 +26,9 @@ const rnaToCondons = RNA => {
 //Check if a "STOP" sequence matches the given codon
 const ifStopSequence = (codon, stopSequence) => {
   if (stopSequence.includes(codon)) {
-    return "STOP";
+    return true;
   }
+  return false;
 };
 
 //Check if the current codon is a valid sequence, if so, then return the approiate protein name
@@ -19,27 +41,6 @@ const codonToProtein = (codon, proteins) => {
 };
 
 export const translate = RNA => {
-  //List of protiens by their codon names
-  const proteins = {
-    AUG: "Methionine",
-    UUU: "Phenylalanine",
-    UUC: "Phenylalanine",
-    UUA: "Leucine",
-    UUG: "Leucine",
-    UCU: "Serine",
-    UCC: "Serine",
-    UCA: "Serine",
-    UCG: "Serine",
-    UAU: "Tyrosine",
-    UAC: "Tyrosine",
-    UGU: "Cysteine",
-    UGC: "Cysteine",
-    UGG: "Tryptophan"
-  };
-
-  //List of STOP sequence use to end a series of proteins creatign a unquie animo acid
-  const stopSequence = ["UAA", "UAG", "UGA"];
-
   //Check if the RNA is empty, if so return a empty array
   if (RNA === undefined) {
     return [];
@@ -50,7 +51,7 @@ export const translate = RNA => {
 
   //Check each condon to see: if a "stop" sequence or a "protein" sequence
   for (const codon of codons) {
-    if (ifStopSequence(codon, stopSequence) === "STOP") {
+    if (ifStopSequence(codon, stopSequence)) {
       break;
     }
     aminnoAcids.push(codonToProtein(codon, proteins));
